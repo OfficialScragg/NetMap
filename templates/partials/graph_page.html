@@ -1,0 +1,55 @@
+<section class="page" id="graph-page" data-graph-data-url="{{ url_for('graph_data') }}">
+  <div class="page__head">
+    <div>
+      <h1 class="h1">Graph</h1>
+      <div class="muted">Hosts clustered by subnet. Use filters to narrow the graph.</div>
+    </div>
+  </div>
+
+  <form class="filters"
+        hx-get="{{ url_for('graph') }}"
+        hx-target="#graph-page"
+        hx-swap="outerHTML"
+        hx-push-url="true"
+        hx-trigger="keyup changed delay:300ms, change delay:50ms, submit">
+    <div class="field">
+      <label class="label" for="q">Search</label>
+      <input id="q" name="q" value="{{ q }}" placeholder="ip, hostname, notes..." />
+    </div>
+    <div class="field">
+      <label class="label" for="port">Open port</label>
+      <input id="port" name="port" value="{{ port }}" inputmode="numeric" placeholder="e.g. 443" />
+    </div>
+    <div class="field">
+      <label class="label" for="service">Service</label>
+      <input id="service" name="service" value="{{ service }}" placeholder="e.g. http, ssh" />
+    </div>
+    <div class="field">
+      <label class="label" for="subnet">Subnet</label>
+      <input id="subnet" name="subnet" value="{{ subnet }}" placeholder="e.g. 192.168.0.0/24" />
+    </div>
+    <div class="field field--check">
+      <label class="check">
+        <input type="checkbox" name="hide_done" value="1" {% if hide_done %}checked{% endif %} />
+        Hide inspected
+      </label>
+    </div>
+    <div class="field field--actions">
+      <button class="btn" type="submit">Apply</button>
+      <a class="btn btn--ghost" href="{{ url_for('graph') }}">Reset</a>
+    </div>
+  </form>
+
+  <div class="panel">
+    <div class="panel__head">
+      <div class="h2">Network</div>
+      <div class="muted small">
+        <span id="graph-host-count">—</span>
+        <span class="muted">•</span>
+        Hover nodes for details. Click a node to open host details.
+      </div>
+    </div>
+    <div id="graph" class="graph graph--full"></div>
+  </div>
+</section>
+

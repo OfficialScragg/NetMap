@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Assistant • NetMap{% endblock %}
+
+{% block content %}
+  <section class="page">
+    <div class="page__head">
+      <div>
+        <h1 class="h1">Assistant</h1>
+        <div class="muted">
+          LLM partner hookup is coming next. For now this page is a placeholder UI shell.
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="muted">
+        Planned:
+        <ul class="list">
+          <li>Ask questions like “show me all hosts with HTTP and SMB open”.</li>
+          <li>Summarize a subnet, suggest next enumeration steps.</li>
+          <li>Create TODOs and attach them to hosts as notes.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+{% endblock %}

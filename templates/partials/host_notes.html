@@ -1,0 +1,10 @@
+<form class="notesForm"
+      hx-post="{{ url_for('host_notes', host_id=host.id) }}"
+      hx-target="#host-notes"
+      hx-swap="innerHTML">
+  <textarea name="notes" rows="14" placeholder="What did you do? creds? screenshots? next steps?">{{ host.notes or "" }}</textarea>
+  <div class="notesForm__actions">
+    <button class="btn" type="submit">Save notes</button>
+    <span class="muted small">Last seen: {{ host.last_seen_utc or "unknown" }}</span>
+  </div>
+</form>

@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}NetMap{% endblock %}</title>
+    <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <a class="brand__link" href="{{ url_for('hosts') }}">
+            <span class="brand__mark">NetMap</span>
+          </a>
+        </div>
+        <nav class="nav">
+          <a class="nav__link {% if request.endpoint in ['hosts','host_detail'] %}is-active{% endif %}" href="{{ url_for('hosts') }}">Hosts</a>
+          <a class="nav__link {% if request.endpoint == 'graph' %}is-active{% endif %}" href="{{ url_for('graph') }}">Graph</a>
+          <a class="nav__link {% if request.endpoint in ['export_urls_page','export_urls_txt'] %}is-active{% endif %}" href="{{ url_for('export_urls_page') }}">Export URLs</a>
+          <a class="nav__link {% if request.endpoint in ['import_page','import_post'] %}is-active{% endif %}" href="{{ url_for('import_page') }}">Import</a>
+          <a class="nav__link {% if request.endpoint == 'assistant' %}is-active{% endif %}" href="{{ url_for('assistant') }}">Assistant</a>
+        </nav>
+      </header>
+      <main class="content {% if request.endpoint == 'graph' %}content--graph{% endif %}">
+        {% block content %}{% endblock %}
+      </main>
+      {% if request.endpoint != 'graph' %}
+        <footer class="footer">
+          <span>NetMap • Flask + HTMX</span>
+        </footer>
+      {% endif %}
+    </div>
+  </body>
+</html>

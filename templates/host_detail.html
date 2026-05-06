@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{{ host.ip }} • NetMap{% endblock %}
+
+{% block content %}
+  <section class="page">
+    <div class="page__head">
+      <div>
+        <div class="crumbs">
+          <a class="link" href="{{ url_for('hosts') }}">Hosts</a>
+          <span class="muted">/</span>
+          <span class="mono">{{ host.ip }}</span>
+        </div>
+        <h1 class="h1 mono">{{ host.ip }}</h1>
+        <div class="muted">
+          {% if host.hostname %}<span>{{ host.hostname }}</span>{% endif %}
+          {% if host.subnet %}<span class="pill mono">{{ host.subnet }}</span>{% endif %}
+        </div>
+      </div>
+      <div class="actions" id="host-{{ host.id }}-badge">
+        {% include "partials/host_inspected_badge.html" %}
+      </div>
+    </div>
+
+    <div class="split split--detail">
+      <div class="panel">
+        <div class="panel__head">
+          <div class="h2">Open ports</div>
+        </div>
+        <div class="tableWrap tableWrap--tall">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class="right">Port</th>
+                <th>Transport</th>
+                <th>State</th>
+                <th>Service</th>
+                <th>Product</th>
+                <th>Version</th>
+                <th>Extra</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in ports %}
+                <tr>
+                  <td class="right mono">{{ p.port }}</td>
+                  <td class="mono">{{ p.transport }}</td>
+                  <td>{{ p.state }}</td>
+                  <td class="mono">{{ p.service or "" }}</td>
+                  <td>{{ p.product or "" }}</td>
+                  <td class="mono">{{ p.version or "" }}</td>
+                  <td class="muted">{{ p.extra or "" }}</td>
+                </tr>
+              {% else %}
+                <tr><td colspan="7" class="muted">No ports imported yet for this host.</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div class="h2">Notes</div>
+          <div class="muted small">Persisted in SQLite.</div>
+        </div>
+        <div id="host-notes">
+          {% include "partials/host_notes.html" %}
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:14px;">
+      <div class="panel__head">
+        <div class="h2">Raw nmap output</div>
+        <div class="muted small">For this host (from the imported <span class="mono">-oN</span> file).</div>
+      </div>
+      <div class="exportBox">
+        <pre class="mono exportPre">{{ host.raw or "" }}</pre>
+      </div>
+    </div>
+  </section>
+{% endblock %}

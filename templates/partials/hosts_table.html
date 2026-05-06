@@ -1,0 +1,39 @@
+<div class="tableWrap tableWrap--tall">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>IP</th>
+        <th>Hostname</th>
+        <th>Subnet</th>
+        <th class="right">Open ports</th>
+        <th>Status</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+        <tr class="{% if r.inspected %}row--done{% endif %}">
+          <td class="mono">
+            <a class="link" href="{{ url_for('host_detail', host_id=r.id) }}">{{ r.ip }}</a>
+          </td>
+          <td>{{ r.hostname or "" }}</td>
+          <td class="mono muted">{{ r.subnet or "" }}</td>
+          <td class="right mono">{{ r.open_ports }}</td>
+          <td>
+            <div id="host-{{ r.id }}-badge">
+              {% set host = r %}
+              {% include "partials/host_inspected_badge.html" %}
+            </div>
+          </td>
+          <td class="notesCell">
+            <div class="notesCell__preview">{{ (r.notes or "")[:90] }}{% if (r.notes or "")|length > 90 %}…{% endif %}</div>
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="6" class="muted">No matching hosts.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

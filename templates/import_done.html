@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Import done • NetMap{% endblock %}
+
+{% block content %}
+  <section class="page">
+    <div class="page__head">
+      <div>
+        <h1 class="h1">Import complete</h1>
+        <div class="muted">Imported from <span class="mono">{{ path }}</span></div>
+      </div>
+      <div class="actions">
+        <a class="btn" href="{{ url_for('hosts') }}">Go to hosts</a>
+        <a class="btn btn--ghost" href="{{ url_for('graph') }}">View graph</a>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="kpis">
+        <div class="kpi">
+          <div class="kpi__label">Hosts</div>
+          <div class="kpi__value mono">{{ imported.hosts }}</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi__label">Ports</div>
+          <div class="kpi__value mono">{{ imported.ports }}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

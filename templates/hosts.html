@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Hosts • NetMap{% endblock %}
+
+{% block content %}
+  <section class="page">
+    <div class="page__head">
+      <div>
+        <h1 class="h1">Hosts</h1>
+        <div class="muted">Search, filter, take notes, and mark hosts as inspected.</div>
+      </div>
+      <div class="actions">
+        <a class="btn btn--ghost" href="{{ url_for('import_page') }}">Import scan</a>
+      </div>
+    </div>
+
+    <form class="filters"
+          hx-get="{{ url_for('hosts') }}"
+          hx-target="#hosts-table"
+          hx-push-url="true"
+          hx-trigger="keyup changed delay:300ms, change delay:50ms, submit">
+      <div class="field">
+        <label class="label" for="q">Search</label>
+        <input id="q" name="q" value="{{ q }}" placeholder="ip, hostname, notes..." />
+      </div>
+      <div class="field">
+        <label class="label" for="port">Open port</label>
+        <input id="port" name="port" value="{{ port }}" inputmode="numeric" placeholder="e.g. 80" />
+      </div>
+      <div class="field">
+        <label class="label" for="service">Service</label>
+        <input id="service" name="service" value="{{ service }}" placeholder="e.g. http, ssh, ftp..." list="services" />
+        <datalist id="services">
+          {% for s in services %}
+            <option value="{{ s }}"></option>
+          {% endfor %}
+        </datalist>
+      </div>
+      <div class="field">
+        <label class="label" for="subnet">Subnet</label>
+        <select id="subnet" name="subnet">
+          <option value="" {% if not subnet %}selected{% endif %}>All</option>
+          {% for s in subnets %}
+            <option value="{{ s }}" {% if subnet == s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field field--check">
+        <label class="check">
+          <input type="checkbox" name="hide_done" value="1" {% if hide_done %}checked{% endif %} />
+          Hide inspected
+        </label>
+      </div>
+      <div class="field field--actions">
+        <button class="btn" type="submit">Apply</button>
+        <a class="btn btn--ghost" href="{{ url_for('hosts') }}">Reset</a>
+      </div>
+    </form>
+
+    <div class="split">
+      <div class="panel">
+        <div class="panel__head">
+          <div class="h2">Table</div>
+          <div class="muted">{{ rows|length }} host(s)</div>
+        </div>
+        <div id="hosts-table">
+          {% include "partials/hosts_table.html" %}
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel__head">
+          <div class="h2">Graph</div>
+          <div class="muted">Clustered by subnet</div>
+        </div>
+        <div class="graphShell"
+             hx-get="{{ url_for('graph_data') }}?{{ request.query_string.decode('utf-8') }}"
+             hx-trigger="load, every 2s [false]"
+             hx-swap="none"
+             id="graphShell"
+             data-graph-url="{{ url_for('graph_data') }}">
+          <div id="graph" class="graph"></div>
+        </div>
+        <div class="muted small">Tip: filters affect both views.</div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
+  <script src="{{ url_for('static', filename='graph.js') }}"></script>
+  <script>
+    window.NetMapGraph && window.NetMapGraph.mount({
+      el: document.getElementById('graph'),
+      url: "{{ url_for('graph_data') }}",
+      initialQueryString: "{{ request.query_string.decode('utf-8')|e }}"
+    });
+    document.body.addEventListener('htmx:afterRequest', function (evt) {
+      if (evt.detail && evt.detail.requestConfig && evt.detail.requestConfig.verb === 'get') {
+        const qs = new URLSearchParams(window.location.search).toString();
+        window.NetMapGraph && window.NetMapGraph.refresh("{{ url_for('graph_data') }}" + (qs ? ("?" + qs) : ""));
+      }
+    });
+  </script>
+{% endblock %}

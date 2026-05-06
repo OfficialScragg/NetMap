@@ -1,0 +1,9 @@
+<div class="badgeRow">
+  <form hx-post="{{ url_for('host_toggle_inspected', host_id=host.id) }}"
+        hx-target="#host-{{ host.id }}-badge"
+        hx-swap="outerHTML">
+    <button class="badge {% if host.inspected %}badge--done{% else %}badge--todo{% endif %}" type="submit">
+      {% if host.inspected %}Inspected{% else %}Todo{% endif %}
+    </button>
+  </form>
+</div>

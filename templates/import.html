@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Import • NetMap{% endblock %}
+
+{% block content %}
+  <section class="page">
+    <div class="page__head">
+      <div>
+        <h1 class="h1">Import nmap output</h1>
+        <div class="muted">Paste a local file path to an nmap <span class="mono">-oN</span> results file.</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <form class="importForm" method="post" action="{{ url_for('import_post') }}">
+        <div class="field">
+          <label class="label" for="path">File path</label>
+          <input id="path" name="path" value="{{ default_path }}" />
+          <div class="muted small">Example: <span class="mono">{{ default_path }}</span></div>
+        </div>
+        <div class="field field--actions">
+          <button class="btn" type="submit">Import</button>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Export URLs • NetMap{% endblock %}
+
+{% block content %}
+  <section class="page">
+    <div class="page__head">
+      <div>
+        <h1 class="h1">Export web URLs</h1>
+        <div class="muted">
+          Generates a plain-text list of HTTP/HTTPS URLs by looking at <span class="mono">service</span> names (so weird ports are included).
+        </div>
+      </div>
+      <div class="actions">
+        <a class="btn" href="{{ url_for('export_urls_txt') }}?{{ request.query_string.decode('utf-8') }}">Download .txt</a>
+      </div>
+    </div>
+
+    <form class="filters"
+          hx-get="{{ url_for('export_urls_page') }}"
+          hx-push-url="true"
+          hx-trigger="keyup changed delay:300ms, change delay:50ms, submit">
+      <div class="field">
+        <label class="label" for="q">Search</label>
+        <input id="q" name="q" value="{{ q }}" placeholder="ip, hostname, notes..." />
+      </div>
+      <div class="field">
+        <label class="label" for="subnet">Subnet</label>
+        <input id="subnet" name="subnet" value="{{ subnet }}" placeholder="e.g. 192.168.0.0/24" />
+      </div>
+      <div class="field field--check">
+        <label class="check">
+          <input type="checkbox" name="hide_done" value="1" {% if hide_done %}checked{% endif %} />
+          Hide inspected
+        </label>
+      </div>
+      <div class="field field--actions">
+        <button class="btn" type="submit">Apply</button>
+        <a class="btn btn--ghost" href="{{ url_for('export_urls_page') }}">Reset</a>
+      </div>
+    </form>
+
+    <div class="panel">
+      <div class="panel__head">
+        <div class="h2">URLs</div>
+        <div class="muted small">
+          Source: <a class="link" href="{{ url_for('export_urls_txt') }}?{{ request.query_string.decode('utf-8') }}">`/export/urls.txt`</a>
+        </div>
+      </div>
+      <div class="exportBox">
+        <pre class="mono exportPre"
+             hx-get="{{ url_for('export_urls_txt') }}?{{ request.query_string.decode('utf-8') }}"
+             hx-trigger="load, every 2s [false]"
+             hx-swap="innerHTML">(loading...)</pre>
+      </div>
+      <div class="muted small" style="margin-top:10px;">
+        Tip: copy/paste into your browser automation or screenshot tooling.
+      </div>
+    </div>
+  </section>
+{% endblock %}
+
